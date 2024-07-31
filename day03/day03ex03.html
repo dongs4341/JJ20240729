@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+        <script>
+            window.onload=function() {
+                var memoTxt = document.getElementById('memoTxt');
+                //querySelector()는 아이디에 씀
+                //querySelector()는 css의 선택기(selecor)를 그대로 사용 가능
+                //id는 #으로 시작
+                //class는 .으로 시작
+                //속성은 []로 구분해서 사용
+                //태그는 그냥 태그 이름으로 시작
+                var demo = document.querySelector('#demo');
+                var clickBtn = document.querySelector('#clickBtn');
+                var resetBtn = document.querySelector('#resetBtn');
+
+                // TDD: 테스트 주도 개발
+                //console.log(memoTxt, clickBtn, resetBtn);
+                
+                //### 의사 코드 ###
+                // 0. 이벤트 헨들러 만들기 //Click 버튼 누르면
+                /*
+                clickBtn.onclick = function(){
+                    demo.innerHTML = memoTxt
+                }
+
+                resetBtn.onclick = function(){
+                    demo.innerHTML = "JavaScript can change HTML content."
+                }*/
+               clickBtn.addEventListener('click', function(event) {
+                    //alert('버튼 클릭 했다');
+                    //console.log('버튼 클릭 했다!');
+
+                    // 2. 메모 input의 데이터 가져오기
+                    //console.dir(memoTxt);
+                    //선언 시 키원드가 없으면 window.memoTxtVal
+                    //var은 스코프 범위가 블록 단위
+                    var memoTxtVal = memoTxtVal;
+
+                    // 3. 가져온 데이터를 텍스트로 변경
+                    demo.innerHTML = memoTxtVal;
+
+                    //4. 초기화 시키기
+                    memoTxt.value = "";
+                    memoTxt.focus();
+
+                });
+        }
+            
+        </script> 
+
+</head>
+<body>
+    메모: <input type="text" id="memoTxt" value="안녕 세계">
+    <p id="demo">JavaScript can change HTML content.</p>
+    
+    <!--인터널 적용 방식-->
+    <button type="button" id="clickBtn" class="btn">Click</button>
+    <button type="button" id="resetBtn">Reset</button>
+   
+
+
+    </body>
+</html>
