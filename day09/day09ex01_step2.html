@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Todo List</h1>
+    <p>
+        할일: <input type="text" class="title">
+        <button id="saveBtn">SAVE</button>  <!-- 할일을 저장하는 버튼 -->
+    </p>
+    <ul class="resultArea"> <!-- 할일 목록이 표시될 영역 -->
+    </ul>
+
+    <script>
+        // DOM 요소를 변수에 저장
+        var saveBtn = document.querySelector("#saveBtn");
+        var title = document.querySelector(".title");
+        
+        // 할일을 목록에 추가하는 함수
+        // 단순 텍스트를 추가 하는 형식을 <li> 태그로 변경
+        function append() {
+            var listArea = document.querySelector(".resultArea");   // 할일 목록이 표시될 영역을 선택
+            listArea.innerHTML += `<li>${title.value}</li>`;    // 입력된 할일을 <li> 태그로 목록에 추가
+            title.value = "";   // 입력 필드를 비움
+            title.focus();
+        }
+
+        // "SAVE" 버튼 클릭 시 할일 추가
+        saveBtn.onclick = function() {
+            append()    // append() 함수를 호출하여 목록에 할일 추가
+        }
+
+        // Enter 키(키코드: 13)를 눌렀을 때 할일을 추가
+        title.onkeydown = function(e) {
+            if(e.keyCode === 13) {
+                append();
+            }
+        }
+    </script>
+</body>
+</html>

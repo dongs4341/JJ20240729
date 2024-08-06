@@ -1,0 +1,97 @@
+<!--배열로 바꿈-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Todo List</h1>
+    <p>
+        할일: <input type="text" class="title">
+        <button id="saveBtn">SAVE</button>
+    </p>
+    <ul class="resultArea">
+    </ul>
+
+    <script>
+        var saveBtn = document.querySelector("#saveBtn");
+        var title = document.querySelector(".title");
+
+        // 할 일 배열을 정의, 초기 할일 설정
+        // 할 일 삭제 기능이 가능하도록 Array를 활용 한다.
+        var todoList = [
+            {no:101, title:"hello", done:false},
+            {no:102, title:"hello2", done:false},
+            {no:103, title:"hello3", done:false},
+            {no:104, title:"hello4", done:false}
+        ];
+        //전역 변수, todoList의 no
+        var todoSeq = 105;
+
+        // 할 일 목록을 화면에 표시하는 함수
+        function drawList() {
+            var listArea = document.querySelector(".resultArea");
+            listArea.innerHTML = "";
+
+            // 배열의 각 할일에 대해 목록 요소 생성
+            todoList.forEach(function(todo) { 
+//--------------------이 부분은 함수로 만드는 게 더 좋음(day09ex01_step3_2)---------------------------------------------/
+                var liTag = document.createElement("li");   // <li> 요소 생성
+                var checkBox = document.createElement("input"); // 체크박스 생성
+                var delBtn = document.createElement("button");  // 삭제 버튼 생성
+                var spanTag = document.createElement("span");   // 할일 제목을 표시할 <span> 생성
+
+                liTag.style.listStyle = "none"; // 목록 스타일 제거
+                checkBox.setAttribute("type", "checkbox");  // 체크박스 타입 설정
+                spanTag.innerHTML = todo.title + " ";   // 할일 제목 설정
+                delBtn.innerText = "Delete";    // 삭제 버튼 텍스트 설정
+
+                // 삭제 버튼 클릭 이벤트 핸들러
+                delBtn.addEventListener('click', function(event) {
+                    // 클릭한 할 일을 배열에서 찾고 삭제
+                    var idx = todoList.findIndex(function(t) {
+                        return t.no === todo.no // 일치하는 할 일 찾음
+                    });
+                    if(idx != -1) {
+                        todoList.splice(idx, 1); // 배열에서 할 일 삭제
+                        drawList(); // 목록 다시 그림
+                    }
+                });
+
+                // <li> 요소에 자식 요소 추가
+                liTag.appendChild(checkBox);
+                liTag.appendChild(spanTag);
+                liTag.appendChild(delBtn);
+                listArea.appendChild(liTag);
+            });
+//--------------------------------------------------------------------------------/
+        }
+        // 초기 할 일 목록 그림
+        drawList();
+
+        // Array에 새 할 일을 추가하는 함수
+        function append() {
+            todoList.push({
+                no:todoSeq++, title:title.value, done:false
+            });
+            drawList();
+            title.value = "";   // 입력 필드 초기화
+            title.focus();  // 입력 필드에 포커스 설정
+        }
+
+         // "SAVE" 버튼 클릭 시 할 일 추가
+        saveBtn.onclick = function() {
+            append()
+        }
+
+        // Enter 키로 할 일 추가
+        title.onkeydown = function(e) {
+            if(e.keyCode === 13) {
+                append();
+            }
+        }
+    </script>
+</body>
+</html>
