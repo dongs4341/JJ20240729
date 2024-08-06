@@ -36,6 +36,50 @@
         ];
         var todoSeq = 105;
 
+        function createLiTag(listArea, todo) {
+            var liTag = document.createElement("li");
+            var checkBox = document.createElement("input");
+            var delBtn = document.createElement("button");
+            var spanTag = document.createElement("span");
+    
+            liTag.style.listStyle = "none"; // 목록 스타일 제거
+            checkBox.setAttribute("type", "checkbox"); // 체크박스 타입 설정
+            spanTag.setAttribute("class", ""); // 클래스 초기화
+            checkBox.removeAttribute("checked"); // 체크 해제
+            // 할 일이 완료되었을 경우의 스타일 적용
+            if(todo.done) {
+                checkBox.setAttribute("checked", "checked"); // 체크박스를 체크 상태로
+                spanTag.setAttribute("class", "okTitle"); // 취소선 스타일 적용
+            }
+            spanTag.innerHTML = todo.title + " ";
+            delBtn.innerText = "Delete";
+    
+            // 삭제 버튼 클릭 이벤트
+            delBtn.addEventListener('click', function(event) {
+                var idx = myFindIdx(todoList, todo);
+                if(idx != -1) {
+                    todoList.splice(idx, 1);
+                    drawList();
+                }
+            });
+    
+            // 체크박스 변경 이벤트
+            checkBox.addEventListener('change', function(event){
+                var idx = myFindIdx(todoList, todo);
+                if(idx != -1) {
+                    todoList[idx].done = !todoList[idx].done;
+                    drawList();
+                }
+            });
+    
+            // <li> 요소에 자식 요소 추가
+            liTag.appendChild(checkBox);
+            liTag.appendChild(spanTag);
+            liTag.appendChild(delBtn);
+            listArea.appendChild(liTag);
+        } // End of createLiTag
+
+
         // 배열에서 인덱스를 찾는 함수
         function myFindIdx(todoList, todo) {
             var idx = todoList.findIndex(function(t) {
@@ -49,46 +93,7 @@
             var listArea = document.querySelector(".resultArea");
             listArea.innerHTML = "";
             todoList.forEach(function(todo) {
-                var liTag = document.createElement("li");
-                var checkBox = document.createElement("input");
-                var delBtn = document.createElement("button");
-                var spanTag = document.createElement("span");
-
-                liTag.style.listStyle = "none"; // 목록 스타일 제거
-                checkBox.setAttribute("type", "checkbox"); // 체크박스 타입 설정
-                spanTag.setAttribute("class", ""); // 클래스 초기화
-                checkBox.removeAttribute("checked"); // 체크 해제
-                // 할 일이 완료되었을 경우의 스타일 적용
-                if(todo.done) {
-                    checkBox.setAttribute("checked", "checked"); // 체크박스를 체크 상태로
-                    spanTag.setAttribute("class", "okTitle"); // 취소선 스타일 적용
-                }
-                spanTag.innerHTML = todo.title + " ";
-                delBtn.innerText = "Delete";
-
-                // 삭제 버튼 클릭 이벤트
-                delBtn.addEventListener('click', function(event) {
-                    var idx = myFindIdx(todoList, todo);
-                    if(idx != -1) {
-                        todoList.splice(idx, 1);
-                        drawList();
-                    }
-                });
-
-                // 체크박스 변경 이벤트
-                checkBox.addEventListener('change', function(event){
-                    var idx = myFindIdx(todoList, todo);
-                    if(idx != -1) {
-                        todoList[idx].done = !todoList[idx].done;
-                        drawList();
-                    }
-                });
-
-                // <li> 요소에 자식 요소 추가
-                liTag.appendChild(checkBox);
-                liTag.appendChild(spanTag);
-                liTag.appendChild(delBtn);
-                listArea.appendChild(liTag);
+                createLiTag(listArea, todo);
             });
         }
         drawList();
