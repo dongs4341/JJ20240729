@@ -36,6 +36,7 @@
         ];
         var todoSeq = 105;
 
+        // 새로운 <li> 요소를 생성하여 할 일을 표시하는 함수
         function createLiTag(listArea, todo) {
             var liTag = document.createElement("li");
             var checkBox = document.createElement("input");
@@ -93,7 +94,7 @@
             var listArea = document.querySelector(".resultArea");
             listArea.innerHTML = "";
             todoList.forEach(function(todo) {
-                createLiTag(listArea, todo);
+                createLiTag(listArea, todo);    //함수 호출
             });
         }
         drawList();
