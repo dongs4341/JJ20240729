@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible="IE=edge">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
@@ -23,6 +23,8 @@
             margin: auto;
             border: 0px solid red;
             padding: 0;
+            /* height 속성을 주지 않고 overflow 설정 */
+            /* height: 40px; */
             overflow: hidden;
             width: 300px;
             font-weight: bold;
@@ -33,7 +35,7 @@
             border: 0px solid black;
             text-align: center;
             list-style: none;
-            float: left;
+            float: left;    /*옆으로 나열*/
             box-sizing: border-box;
             line-height: 50px;
         }
@@ -45,9 +47,10 @@
             color: black; 
             text-decoration: none; 
             display: block; 
+
         }
 
-        div ul li:hover, nav ul li a:active, nav ul li.active a {
+        div ul li:hover , nav ul li a:active, nav ul li.active a{
             border-bottom: 2px solid red;
             font-weight: bold;
             color: red;
@@ -60,7 +63,7 @@
             background-color: white;
         }
         .hidden {
-            display: none;
+            display: none; /* 스타일 추가 */
         }
     </style>
 </head>
@@ -73,6 +76,7 @@
             <ul>
                 <li><a href="#" onclick="showSection('shop')">제품</a></li>
                 <li><a href="#" onclick="showSection('cart')">장바구니</a></li>
+            </ul>
             </ul>
         </nav>
     </div>
@@ -137,13 +141,23 @@
 
         function showSection(sectionId) {
             // 모든 섹션을 숨김
-            $('#main .container').addClass('hidden');  // Changed: Simplified with jQuery
+            document.querySelectorAll('#main .container').forEach(function(section) {
+                section.classList.add('hidden');
+            });
             // 선택한 섹션만 보이게 함
-            $('#' + sectionId).removeClass('hidden');  // Changed: Simplified with jQuery
+            document.getElementById(sectionId).classList.remove('hidden');
             
             // 네비게이션 링크에 'active' 클래스 적용
-            $('nav ul li').removeClass('active'); // Changed: Simplified with jQuery
-            $('nav ul li:has(a[onclick="showSection(\'' + sectionId + '\')"])').addClass('active'); // Changed: Simplified with jQuery
+            document.querySelectorAll('nav ul li').forEach(function(navItem) {
+                navItem.classList.remove('active');
+            });
+        
+            // 해당 섹션의 링크에 'active' 클래스 추가
+            if (sectionId === 'shop') {
+                document.querySelector('nav ul li:nth-child(1)').classList.add('active');
+            } else if (sectionId === 'cart') {
+                document.querySelector('nav ul li:nth-child(2)').classList.add('active');
+            }
             
             // 장바구니 페이지로 전환될 때 loadCartData() 호출
             if (sectionId === 'cart') {
@@ -155,27 +169,45 @@
             // 페이지 로드 시 'shop' 섹션을 기본으로 표시
             showSection('shop');
         });
-
+        /////////////////////////////////////////////////////
+        
         var cartList = JSON.parse(localStorage.getItem("cartList")) || [];
         
         function appendCart(btn) {
-            var $row = $(btn).closest('tr'); // Changed: Use closest to simplify jQuery selection
-            var cartItem = {
-                no: $row.find("td:nth(0)").text(),
-                name: $row.find("td:nth(1)").text(),
-                price: $row.find("td:nth(2)").text(),
-                quantity: $row.find('select[name=ea]').val()
-            };
-            cartList.push(cartItem); // 장바구니에 추가
-            localStorage.setItem("cartList", JSON.stringify(cartList)); // 장바구니를 다시 저장
+            var $row = $(btn).parent().parent();
+            var eaVal = $row.find('select[name=ea]').val();
+            var noVal = $row.find("td:nth(0)").text();
+            var nameVal = $row.find("td:nth(1)").text();
+            var priceVal = $row.find("td:nth(2)").text();
+
+            // localStorage에 저장.
+             var cartItem = {
+                 no: noVal,
+                 name: nameVal,
+                 price: priceVal,
+                 quantity: eaVal
+             };
+             // 장바구니 리스트를 로컬 스토리지에서 가져옴
+             var cartList = JSON.parse(localStorage.getItem("cartList")) || [];
+             cartList.push(cartItem); // 새로운 항목을 장바구니에 추가
+             localStorage.setItem("cartList", JSON.stringify(cartList)); // 장바구니를 다시 저장     
         }
     
+        
+
         function getTopNo(lis) {
-            return Math.max(-1, ...lis.map(item => item.no)); // Changed: Simplified using Math.max
+            var topNo = -1;
+            lis.forEach(function(item) {
+                if(item.no > topNo) {
+                    topNo = item.no;
+                }
+            });
+            
+            return topNo;
         }
 
         function init() {
-            if (!localStorage.getItem("productList")) {
+            if(!localStorage.getItem("productList")) {
                 var list = [
                     {"no":1,"name":"냉장고","price":300},
                     {"no":2,"name":"세탁기","price":200},
@@ -187,48 +219,60 @@
                     {"no":8,"name":"전자랜지","price":20},
                     {"no":9,"name":"에어프라이기","price":30}
                 ];
+                // productList는 localStorage에 저장하고
+                // 장바구니는 sessionStorage에 저장한다.
                 localStorage.setItem("productList", JSON.stringify(list));
                 localStorage.setItem("topNo", "" + getTopNo(list));
             }
         }
 
-        $('#saveBtn').on('click', function() {
+        $('#saveBtn').on('click', function(e) {
+            var rowItem = {
+                no: Number(localStorage.getItem("topNo"))+1,
+                name : $('#name').val(),
+                price : $('#price').val()
+            }
             var newList = JSON.parse(localStorage.getItem("productList"));
-            var newItem = {
-                no: Number(localStorage.getItem("topNo")) + 1,
-                name: $('#name').val(),
-                price: $('#price').val()
-            };
-            newList.push(newItem);
-            localStorage.setItem("productList", JSON.stringify(newList));
+            newList.push(rowItem);
+            console.log(newList);
             localStorage.setItem("topNo", "" + getTopNo(newList));
+            localStorage.setItem("productList", JSON.stringify(newList));
+            
+            var name = document.getElementById('name');
+            var price = document.getElementById('price');
+            
+            name.value = "";
+            price.value = "";
+            name.focus();
 
-            $('#name').val('').focus(); // Changed: Simplified input clearing and focusing
-            $('#price').val(''); // Changed: Simplified input clearing
-
+            // 목록 갱신
             loadData();
         });
         
         function loadData() {
             var productList = JSON.parse(localStorage.getItem("productList"));
             var compiled = _.template($('#tableTemplate').html());
-            $('.listBox').html(compiled({productList: productList})); // Changed: jQuery selector simplified
+            var html = compiled({productList: productList});
+            $('div.listBox').html(html);
         }
 
         function loadCartData() {
+            // 장바구니 리스트를 로컬 스토리지에서 가져옴
             var cartList = JSON.parse(localStorage.getItem("cartList")) || [];
             var cartTableBody = $('#cartContents');
-            cartTableBody.empty();
+            cartTableBody.empty(); // 테이블 초기화
 
-            $.each(cartList, function(_, item) { // Changed: Use jQuery $.each for iteration
-                cartTableBody.append(`<tr>
+            cartList.forEach(function(item) {
+                var row = `<tr>
                     <td>${item.name}</td>
                     <td>${item.price}</td>
                     <td>${item.quantity}</td>
-                </tr>`);
+                </tr>`;
+                cartTableBody.append(row);
             });
         }
         
+
         $(function() {
             init();
             loadData();
@@ -237,3 +281,4 @@
 
 </body>
 </html>
+
