@@ -133,17 +133,16 @@
     </script>
 
     <script>
-        localStorage.clear();   //localStorage 정리
 
         function showSection(sectionId) {
             // 모든 섹션을 숨김
-            $('#main .container').addClass('hidden');  // Changed: Simplified with jQuery
+            $('#main .container').addClass('hidden');  
             // 선택한 섹션만 보이게 함
-            $('#' + sectionId).removeClass('hidden');  // Changed: Simplified with jQuery
+            $('#' + sectionId).removeClass('hidden');  
             
             // 네비게이션 링크에 'active' 클래스 적용
-            $('nav ul li').removeClass('active'); // Changed: Simplified with jQuery
-            $('nav ul li:has(a[onclick="showSection(\'' + sectionId + '\')"])').addClass('active'); // Changed: Simplified with jQuery
+            $('nav ul li').removeClass('active'); 
+            $('nav ul li:has(a[onclick="showSection(\'' + sectionId + '\')"])').addClass('active'); 
             
             // 장바구니 페이지로 전환될 때 loadCartData() 호출
             if (sectionId === 'cart') {
@@ -159,7 +158,7 @@
         var cartList = JSON.parse(localStorage.getItem("cartList")) || [];
         
         function appendCart(btn) {
-            var $row = $(btn).closest('tr'); // Changed: Use closest to simplify jQuery selection
+            var $row = $(btn).closest('tr'); 
             var cartItem = {
                 no: $row.find("td:nth(0)").text(),
                 name: $row.find("td:nth(1)").text(),
@@ -171,7 +170,7 @@
         }
     
         function getTopNo(lis) {
-            return Math.max(-1, ...lis.map(item => item.no)); // Changed: Simplified using Math.max
+            return Math.max(-1, ...lis.map(item => item.no));
         }
 
         function init() {
@@ -203,8 +202,8 @@
             localStorage.setItem("productList", JSON.stringify(newList));
             localStorage.setItem("topNo", "" + getTopNo(newList));
 
-            $('#name').val('').focus(); // Changed: Simplified input clearing and focusing
-            $('#price').val(''); // Changed: Simplified input clearing
+            $('#name').val('').focus(); 
+            $('#price').val(''); 
 
             loadData();
         });
@@ -212,7 +211,7 @@
         function loadData() {
             var productList = JSON.parse(localStorage.getItem("productList"));
             var compiled = _.template($('#tableTemplate').html());
-            $('.listBox').html(compiled({productList: productList})); // Changed: jQuery selector simplified
+            $('.listBox').html(compiled({productList: productList})); 
         }
 
         function loadCartData() {
@@ -220,7 +219,7 @@
             var cartTableBody = $('#cartContents');
             cartTableBody.empty();
 
-            $.each(cartList, function(_, item) { // Changed: Use jQuery $.each for iteration
+            $.each(cartList, function(_, item) { 
                 cartTableBody.append(`<tr>
                     <td>${item.name}</td>
                     <td>${item.price}</td>
